@@ -24,6 +24,7 @@ public:
     int importSm2Ciphertext(const char *C1x, const char *C1y,
                     const char *C3, const char *C2,
                     unsigned char *out, int *outL);
+    int exportSm2Ciphertext(char *in, int inl, char *out, int *outl);
     int sm2Decrypt(EVP_PKEY_CTX *ctx, unsigned char *in, int inL,
                     unsigned char *out, int *outL);
     int sm2Encrypt(EVP_PKEY_CTX *ctx, unsigned char *in, int inL,

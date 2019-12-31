@@ -207,6 +207,28 @@ int Sm2Opt::importSm2Ciphertext(const char *C1x, const char *C1y,
     return *outL;
 }
 
+int Sm2Opt::exportSm2Ciphertext(char *in, int inl, char *out, int *outl)
+{
+    int ret = 0;
+    unsigned char *q = (unsigned char *)out;
+    const unsigned char *p = (unsigned char*)in;
+    SM2_Ciphertext * sm2_ciphertext = d2i_SM2_Ciphertext(nullptr, &p, inl);
+    if(sm2_ciphertext==nullptr) return ret;
+    char *C1x = BN_bn2hex(sm2_ciphertext->C1x);
+    char *C1y = BN_bn2hex(sm2_ciphertext->C1y);
+    memcpy(q, C1x, strlen(C1x));
+    q+=strlen(C1x);
+    memcpy(q, C1y, strlen(C1y));
+    q+=strlen(C1y);
+    memcpy(q,sm2_ciphertext->C3->data,sm2_ciphertext->C3->length);
+    q += sm2_ciphertext->C3->length;
+    memcpy(q,sm2_ciphertext->C2->data,sm2_ciphertext->C2->length);
+    q += sm2_ciphertext->C2->length;
+    ret = q - (unsigned char*)out;
+    *outl = ret;
+    return  ret;
+}
+
 int Sm2Opt::sm2Decrypt(EVP_PKEY_CTX *ctx, unsigned char *in, int inL,
                 unsigned char *out, int *outL)
 {
